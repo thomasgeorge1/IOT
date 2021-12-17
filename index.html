@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Sample App</title>
+</head>
+
+<body>
+  <h1>Sample App</h1>
+  <h3>Sensor Data 01</h3>
+  <p id='sensor01'>
+
+  </p>
+  <h3>Sensor Data 02</h3>
+  <p id='sensor02'>
+
+  </p>
+  <h3>Sensor Data 03</h3>
+  <p id='sensor03'>
+
+  </p>
+  <h3>Button</h3>
+  <p id='button_val'>
+  </p>
+  <button type="button" id='btn'>Button</button>
+
+  <script type="module">
+    var buttonVal,sensor_1,sensor_2,sensor_3;
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAnalytics } from "firebase/analytics";
+    import { getDatabase, ref, onValue, set } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+    //Change the Firebase Config
+
+   const firebaseConfig = {
+  apiKey: "AIzaSyDGOQtnBqKpnSK5Rd1i1Vj7P5-duGnU1PM",
+  authDomain: "iot-a-d.firebaseapp.com",
+  databaseURL: "https://iot-a-d-default-rtdb.firebaseio.com",
+  projectId: "iot-a-d",
+  storageBucket: "iot-a-d.appspot.com",
+  messagingSenderId: "699300063561",
+  appId: "1:699300063561:web:17b69c739b262dc7aa5298",
+  measurementId: "G-9WVBLYHLQ2"
+};
+
+// Initialize Firebase
+const analytics = getAnalytics(app);
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase();
+    const data = ref(db, '/');
+    onValue(data, (snapshot) => {
+        const sensorData = snapshot.val();
+        document.getElementById('sensor01').innerText = sensorData.sensor1;
+        document.getElementById('sensor02').innerText = sensorData.sensor2;
+        document.getElementById('sensor03').innerText = sensorData.sensor3;
+        document.getElementById('button_val').innerText = sensorData.button;
+        buttonVal = sensorData.button;
+        sensor_1 = sensorData.sensor1
+        sensor_2 = sensorData.sensor2
+        sensor_3 = sensorData.sensor3
+    });
+    document.getElementById('btn').addEventListener('click',()=> {
+      console.log('OnClicked');
+      set(ref(db, '/'), {
+        button: (buttonVal == 'true')?'false':'true',
+        sensor1:sensor_1,
+        sensor2:sensor_2,
+        sensor3:sensor_3
+    });
+});
+  </script>
+</body>
+
+</html>
